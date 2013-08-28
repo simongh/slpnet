@@ -28,13 +28,13 @@ namespace Discovery.Slp.Extensions
 		/// </summary>
 		/// <param name="data">byte array of data to parse</param>
 		/// <returns>new Extension</returns>
-		internal abstract ExtensionBase FromBytes(byte[] data);
+		internal abstract ExtensionBase Create(SlpReader reader);
 
 		/// <summary>
 		/// Converts this extension to a byte array
 		/// </summary>
 		/// <returns>array of bytes</returns>
-		internal abstract byte[] ToBytes();
+		internal abstract void ToBytes(SlpWriter writer);
 
 	}
 }

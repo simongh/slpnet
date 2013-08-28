@@ -33,17 +33,12 @@ namespace Discovery.Slp.Extensions
 		/// </summary>
 		/// <param name="data">byte array of data to parse</param>
 		/// <returns>new UserDefined Extension</returns>
-		internal override ExtensionBase FromBytes(byte[] data)
+		internal override ExtensionBase Create(SlpReader reader)
 		{
-			System.IO.MemoryStream ms = new System.IO.MemoryStream(data);
-
-			var result = new UnknownExtension(this.Id);
-
-			ms.Seek(2, System.IO.SeekOrigin.Begin);
-			//result.Offset = Utilities.ReadInt(ms, 3);
-
-			result.Data = new byte[Offset];
-			ms.Read(result.Data, 0, result.Offset);
+			var id = reader.ReadInt16();
+			var result = new UnknownExtension(id);
+			result.Offset = reader.ReadInt24();
+			result.Data = reader.ReadBytes(result.Offset);
 
 			return result;
 		}
@@ -52,13 +47,11 @@ namespace Discovery.Slp.Extensions
 		/// Converts this extension to a byte array
 		/// </summary>
 		/// <returns>array of bytes</returns>
-		internal override byte[] ToBytes()
+		internal override void ToBytes(SlpWriter writer)
 		{
-			byte[] buffer = new byte[Data.Length + 5];
-			//Utilities.WriteInt(Id, 2).CopyTo(buffer, 0);
-
-			Data.CopyTo(buffer, 5);
-			return buffer;
+			writer.Write((short)Id);
+			writer.Write(Offset, 3);
+			writer.Write(Data);
 		}
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Discovery.Slp.Extensions
 {
@@ -32,26 +31,22 @@ namespace Discovery.Slp.Extensions
 		/// </summary>
 		/// <param name="data">Data to parse. The data may contain multiple extensions, but only the first one is returned</param>
 		/// <returns>New extension if the extension is supported</returns>
-		internal ExtensionBase GetExtension(byte[] data)
+		internal ExtensionBase GetExtension(SlpReader reader)
 		{
-			throw new NotImplementedException();
-			//if (data == null || data.Length < 3)
-			//	return null;
+			var id = reader.ReadInt16();
+			if (id < 0 || id > 0x8fff)
+				throw new ServiceProtocolException(ServiceErrorCode.OptionNotUnderstood, "The ID was out of the allowed range of possible values.");
 
-			//int id = Utilities.ReadInt(data, 0, 2);
-			//if (id < 0 || id > 0x8fff)
-			//	throw new ServiceProtocolException(ServiceErrorCode.OptionNotUnderstood, "The ID was out of the allowed range of possible values.");
+			if (id >= 0x4000 && id < 0x8000)
+			{
+				if (!_RegisteredExtensions.ContainsKey(id))
+					throw new ServiceProtocolException(ServiceErrorCode.OptionNotUnderstood);
+			}
 
-			//if (id >= 0x4000 && id < 0x8000)
-			//{
-			//	if (!_RegisteredExtensions.ContainsKey(id))
-			//		throw new ServiceProtocolException(ServiceErrorCode.OptionNotUnderstood);
-			//}
+			if (!_RegisteredExtensions.ContainsKey(id))
+				return null;
 
-			//if (!_RegisteredExtensions.ContainsKey(id))
-			//	return null;
-
-			//return _RegisteredExtensions[id].FromBytes(data);
+			return _RegisteredExtensions[id].Create(reader);
 		}
 
 	}

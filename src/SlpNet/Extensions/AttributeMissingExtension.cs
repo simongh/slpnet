@@ -53,16 +53,13 @@ namespace Discovery.Slp.Extensions
 		/// </summary>
 		/// <param name="data">byte array of data to parse</param>
 		/// <returns>new AttributeMissing Extension</returns>
-		internal override ExtensionBase FromBytes(byte[] data)
+		internal override ExtensionBase Create(SlpReader reader)
 		{
-			System.IO.MemoryStream ms = new System.IO.MemoryStream(data);
-
 			var result = new AttributeMissingExtension();
 
-			ms.Seek(2, System.IO.SeekOrigin.Begin);
-			//result.Offset = Utilities.ReadInt(ms, 3);
-			//result.TemplateName = Utilities.ReadString(ms);
-			//result.Attributes = Utilities.TagListDecode(Utilities.ReadString(ms), false);
+			Offset = reader.ReadInt24();
+			TemplateName = reader.ReadString();
+			Attributes.AddRange(reader.TagListDecode(false));
 
 			return result;
 		}
@@ -71,16 +68,13 @@ namespace Discovery.Slp.Extensions
 		/// Converts this extension to a byte array
 		/// </summary>
 		/// <returns>array of bytes</returns>
-		internal override byte[] ToBytes()
+		internal override void ToBytes(SlpWriter writer)
 		{
-			System.IO.MemoryStream ms = new System.IO.MemoryStream();
+			writer.Write((short)Id);
 
-			//Utilities.WriteInt(ms, Id, 2);
-			//Utilities.WriteInt(ms, 0, 3);
-			//Utilities.WriteString(ms, TemplateName + TemplateVersion);
-			//Utilities.WriteString(ms, Utilities.TagListEncode(Attributes, false));
-
-			return ms.ToArray();
+			var tmp = writer.GetBytes(TemplateName + TemplateVersion + writer.TagListEncode(Attributes, false));
+			writer.Write(tmp.Length, 3);
+			writer.Write(tmp);
 		}
 	}
 }

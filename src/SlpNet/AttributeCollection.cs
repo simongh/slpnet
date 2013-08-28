@@ -171,7 +171,7 @@ namespace Discovery.Slp
 			return sb.ToString();
 		}
 
-		internal void ToBytes(System.IO.Stream stream)
+		internal void ToBytes(SlpWriter writer)
 		{
 			StringBuilder sb = new StringBuilder();
 
@@ -181,37 +181,19 @@ namespace Discovery.Slp
 					sb.Append(",");
 
 				sb.Append("(");
-				sb.Append(Utilities.EscapeString(item.Key, Utilities.AttributeTagReserved));
+				sb.Append(writer.Escape(item.Key, Constants.ATTRIBUTETAGRESERVED));
 				if (!string.IsNullOrEmpty(item.Value))
 				{
 					sb.Append("=");
 					if (item.Value.StartsWith("\\FF", StringComparison.InvariantCultureIgnoreCase))
 						sb.Append(item.Value);
 					else
-						sb.Append(Utilities.EscapeString(item.Value, Utilities.AttributeValueReserved));
+						sb.Append(writer.Escape(item.Value, Constants.ATTRIBUTEVALUERESERVED));
 				}
 				sb.Append(")");
 			}
 
-			Utilities.WriteRawString(stream, sb.ToString());
-		}
-
-		internal static AttributeCollection FromBytes(System.IO.Stream stream)
-		{
-			string tmp = Utilities.ReadRawString(stream);
-
-			AttributeCollection result = new AttributeCollection();
-			foreach (string item in tmp.Split(','))
-			{
-				string[] pair = item.Split('=');
-				if (pair.Length == 1)
-					result.Add(Utilities.UnescapeString(pair[0]), null);
-				else if (pair.Length == 2)
-					result.Add(Utilities.UnescapeString(pair[0]), Utilities.UnescapeString(pair[1]));
-				else
-					throw new ServiceProtocolException(ServiceErrorCode.ParseError);
-			}
-			return result;
+			writer.WriteRaw(sb.ToString());
 		}
 	}
 }

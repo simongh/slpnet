@@ -41,7 +41,7 @@ namespace Discovery.Slp
 		/// <summary>
 		/// Gets the list of authentication blocks
 		/// </summary>
-		public List<Security.AuthenticationBlock> AuthBlocks
+		public IList<Security.AuthenticationBlock> AuthBlocks
 		{
 			get;
 			private set;
@@ -52,50 +52,23 @@ namespace Discovery.Slp
 			AuthBlocks = new List<Security.AuthenticationBlock>();
 		}
 
-		internal byte[] ToBytes()
-		{
-			System.IO.MemoryStream ms = new System.IO.MemoryStream();
-			ToBytes(ms);
-			return ms.ToArray();
-		}
-
-		internal void ToBytes(System.IO.Stream stream)
+		internal void ToBytes(SlpWriter writer)
 		{
 			if (Uri == null)
 				throw new ServiceException("Service URL cannot be null.");
 
-			stream.WriteByte(0);
-			Utilities.WriteInt(stream, (int)Lifetime.TotalSeconds, 2);
-			Utilities.WriteString(stream, Uri.ToString());
-			Utilities.WriteInt(stream, AuthBlocks.Count, 1);
+			writer.Write((byte)0);
+			writer.Write((short)Lifetime.TotalSeconds);
+			writer.Write(Uri.ToString());
+			writer.Write((byte)AuthBlocks.Count);
 
 			foreach (var item in AuthBlocks)
 			{
-				item.ToByteArray(stream);
+				item.ToBytes(writer);
 			}
 		}
 
-		internal static ServiceEntry FromBytes(System.IO.Stream stream)
-		{
-			if (stream.ReadByte() != 0)
-				throw new ServiceProtocolException(ServiceErrorCode.ParseError);
-
-			ServiceEntry result = new ServiceEntry();
-			result.Lifetime = new TimeSpan(0, 0, Utilities.ReadInt(stream, 2));
-			result.Uri = new ServiceUri(Utilities.ReadString(stream));
-
-			int c = Utilities.ReadInt(stream, 1);
-			for (int i = 0; i < c; i++)
-			{
-				var a = Security.AuthenticationBlock.Parse(stream);
-				result.AuthBlocks.Add(a);
-				OnAuthenticated(result, a);
-			}
-
-			return result;
-		}
-
-		private static void OnAuthenticated(ServiceEntry serviceEntry, Security.AuthenticationBlock authBlock)
+		public static void OnAuthenticated(ServiceEntry serviceEntry, Security.AuthenticationBlock authBlock)
 		{
 			if (Authenticated != null)
 				Authenticated(null, new Security.AuthenticatedEventArgs(serviceEntry, authBlock));

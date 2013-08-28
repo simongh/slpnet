@@ -33,5 +33,10 @@ namespace Discovery.Slp
 	{
 		public static readonly DateTime EPOCH = new DateTime(1970, 1, 1);
 		public const string DEFAULTSCOPE = "DEFAULT";
+
+		public const string VALIDTEXT = "\\([0-9a-f]{2})";
+		public const string ATTRIBUTEVALUERESERVED = @"[\(\),\\!<=>~\x00-\x1F\x7F_*]";
+		public const string ATTRIBUTETAGRESERVED = @"[\(\),\\!<=>~\x00-\x1F\x7F]";
+		public const string SCOPERESERVED = @"[\(\),\\!<=>~\x00-\x1f\x7F]";
 	}
 }
