@@ -24,11 +24,38 @@ namespace Discovery.Slp.Messages
 			MessageBase result = null;
 			switch (tmp)
 			{
+				case 1:
+					result = new ServiceRequest();
+					break;
+				case 2:
+					result = new ServiceReply();
+					break;
+				case 3:
+					result = new ServiceRegistrationRequest();
+					break;
+				case 4:
+					result = new ServiceDeregistrationRequest();
+					break;
+				case 5:
+					result = new ServiceAcknowledgement();
+					break;
 				case 6:
 					result = new AttributeRequest();
 					break;
 				case 7:
 					result = new AttributeReply();
+					break;
+				case 8:
+					result = new DirectoryAgentAdvert();
+					break;
+				case 9:
+					result = new ServiceTypeRequest();
+					break;
+				case 10:
+					result = new ServiceTypeReply();
+					break;
+				case 11:
+					result = new ServiceAgentAdvert();
 					break;
 				default:
 					throw new ServiceProtocolException(ServiceErrorCode.ParseError);

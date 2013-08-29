@@ -51,6 +51,13 @@ namespace Discovery.Slp
 			return Unescape(ReadRawString());
 		}
 
+		public string ReadString(int length)
+		{
+			var buffer = ReadBytes(length);
+
+			return Unescape(_encoder.GetString(buffer));
+		}
+
 		public string ReadRawString()
 		{
 			var toread = ReadInt16();

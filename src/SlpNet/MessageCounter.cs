@@ -6,8 +6,6 @@ namespace Discovery.Slp
 	/// </summary>
 	internal class MessageCounter
 	{
-		private static readonly MessageCounter _Instance;
-
 		private int _Counter;
 
 		/// <summary>
@@ -15,12 +13,13 @@ namespace Discovery.Slp
 		/// </summary>
 		public static MessageCounter Instance
 		{
-			get { return _Instance; }
+			get;
+			private set;
 		}
 
 		static MessageCounter()
 		{
-			_Instance = new MessageCounter();
+			Instance = new MessageCounter();
 		}
 
 		private MessageCounter()
