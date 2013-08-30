@@ -78,7 +78,7 @@ namespace Discovery.Slp.Messages
 
 			var tmp = reader.ReadString();
 			Scopes.AddRange(reader.ReadList());
-			Uri = new ServiceUri(tmp, EntityFactory.Instance.CreateAttributeCollection(reader));
+			Uri = new ServiceUri(tmp, Services.Locator.GetInstance<AttributeCollection>(reader));
 			ReadAuthBlocks(reader, AuthBlocks);
 		}
 	}

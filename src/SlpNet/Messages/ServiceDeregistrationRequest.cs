@@ -65,7 +65,7 @@ namespace Discovery.Slp.Messages
 			base.Create(reader);
 
 			Scopes.AddRange(reader.ReadList());
-			Service = EntityFactory.Instance.CreateServiceEntry(reader);
+			Service = Services.Locator.GetInstance<ServiceEntry>(reader);
 			Tags.AddRange(reader.ReadList());
 		}
 	}

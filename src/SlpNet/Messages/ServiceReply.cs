@@ -58,7 +58,7 @@ namespace Discovery.Slp.Messages
 			var result = new ServiceEntry[tmp];
 			for (int i = 0; i < tmp; i++)
 			{
-				result[i] = EntityFactory.Instance.CreateServiceEntry(reader);
+				result[i] = Slp.Services.Locator.GetInstance<ServiceEntry>(reader);
 			}
 
 			Services = new ReadOnlyCollection<ServiceEntry>(result);

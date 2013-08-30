@@ -57,7 +57,7 @@ namespace Discovery.Slp.Messages
 			base.Create(reader);
 
 			ErrorCode = (ServiceErrorCode)reader.ReadInt16();
-			Attributes = EntityFactory.Instance.CreateAttributeCollection(reader);
+			Attributes = Services.Locator.GetInstance<AttributeCollection>(reader);
 			ReadAuthBlocks(reader, AuthBlocks);
 		}
 	}

@@ -186,7 +186,7 @@ namespace Discovery.Slp.Messages
 			var count = reader.ReadByte();
 			for (int i = 0; i < count; i++)
 			{
-				var a = EntityFactory.Instance.CreateAuthenticationBlock(reader);
+				var a = Services.Locator.GetInstance<Security.AuthenticationBlock>(reader);
 				authBlocks.Add(a);
 				OnAuthenticated(this, a);
 			}

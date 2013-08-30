@@ -14,6 +14,9 @@ namespace Discovery.Slp.Messages
 			Instance = new MessageFactory();
 		}
 
+		private MessageFactory()
+		{ }
+
 		public MessageBase Read(SlpReader reader)
 		{
 			var v = reader.ReadByte();

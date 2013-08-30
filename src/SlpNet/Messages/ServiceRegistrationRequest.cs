@@ -40,7 +40,7 @@ namespace Discovery.Slp.Messages
 		}
 
 		public ServiceRegistrationRequest(ServiceEntry service)
-			:this()
+			: this()
 		{
 			Service = service;
 		}
@@ -71,10 +71,10 @@ namespace Discovery.Slp.Messages
 		{
 			base.Create(reader);
 
-			Service = EntityFactory.Instance.CreateServiceEntry(reader);
+			Service = Services.Locator.GetInstance<ServiceEntry>(reader);
 			var tmp = reader.ReadString();
 			Scopes.AddRange(reader.ReadList());
-			Service.Uri = new ServiceUri("service:" + tmp + ":" + EntityFactory.Instance.CreateAttributeCollection(reader));
+			Service.Uri = new ServiceUri("service:" + tmp + ":" + Services.Locator.GetInstance<AttributeCollection>(reader));
 			ReadAuthBlocks(reader, AuthBlocks);
 		}
 	}

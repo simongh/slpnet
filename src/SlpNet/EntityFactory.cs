@@ -1,7 +1,7 @@
 ﻿
 namespace Discovery.Slp
 {
-	public class EntityFactory
+	internal class EntityFactory
 	{
 		public static EntityFactory Instance
 		{
@@ -13,6 +13,9 @@ namespace Discovery.Slp
 		{
 			Instance = new EntityFactory();
 		}
+
+		private EntityFactory()
+		{ }
 
 		public virtual ServiceEntry CreateServiceEntry(SlpReader reader)
 		{

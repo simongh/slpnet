@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Discovery.Slp.Extensions
 {
@@ -7,23 +8,23 @@ namespace Discovery.Slp.Extensions
 	/// </summary>
 	public class ExtensionManager
 	{
-		private Dictionary<int, ExtensionBase> _RegisteredExtensions;
+		private Dictionary<int, Type> _RegisteredExtensions;
 
 		public ExtensionManager()
 		{
-			_RegisteredExtensions = new Dictionary<int, ExtensionBase>();
+			_RegisteredExtensions = new Dictionary<int, Type>();
 		}
 
 		/// <summary>
 		/// Registers a new extension ID
 		/// </summary>
 		/// <param name="extension">An instance of the extension</param>
-		public void RegisterExtension(ExtensionBase extension)
+		public void RegisterExtension<T>(int id) where T : ExtensionBase
 		{
-			if (_RegisteredExtensions.ContainsKey(extension.Id))
+			if (_RegisteredExtensions.ContainsKey(id))
 				throw new ServiceException("An extension with that ID is already registered.");
 
-			_RegisteredExtensions.Add(extension.Id, extension);
+			_RegisteredExtensions.Add(id, typeof(T));
 		}
 
 		/// <summary>
@@ -34,10 +35,10 @@ namespace Discovery.Slp.Extensions
 		internal ExtensionBase GetExtension(SlpReader reader)
 		{
 			var id = reader.ReadInt16();
-			if (id < 0 || id > 0x8fff)
+			if (id < 0 || id > 0x8ff)
 				throw new ServiceProtocolException(ServiceErrorCode.OptionNotUnderstood, "The ID was out of the allowed range of possible values.");
 
-			if (id >= 0x4000 && id < 0x8000)
+			if (id >= 0x400 && id < 0x800)
 			{
 				if (!_RegisteredExtensions.ContainsKey(id))
 					throw new ServiceProtocolException(ServiceErrorCode.OptionNotUnderstood);
@@ -46,7 +47,8 @@ namespace Discovery.Slp.Extensions
 			if (!_RegisteredExtensions.ContainsKey(id))
 				return null;
 
-			return _RegisteredExtensions[id].Create(reader);
+			var result = (ExtensionBase)Services.Locator.GetInstance(_RegisteredExtensions[id]);
+			return result.Create(reader);
 		}
 
 	}

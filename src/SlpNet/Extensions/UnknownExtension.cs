@@ -28,6 +28,10 @@ namespace Discovery.Slp.Extensions
 			_Id = id;
 		}
 
+		public UnknownExtension()
+			: base()
+		{ }
+
 		/// <summary>
 		/// Initalises a new extension from the received data
 		/// </summary>
@@ -35,8 +39,8 @@ namespace Discovery.Slp.Extensions
 		/// <returns>new UserDefined Extension</returns>
 		internal override ExtensionBase Create(SlpReader reader)
 		{
-			var id = reader.ReadInt16();
-			var result = new UnknownExtension(id);
+			var result = new UnknownExtension();
+			result._Id = reader.ReadInt16();
 			result.Offset = reader.ReadInt24();
 			result.Data = reader.ReadBytes(result.Offset);
 

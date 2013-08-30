@@ -73,6 +73,9 @@
     <Compile Include="ServiceEntry.cs" />
     <Compile Include="ServiceException.cs" />
     <Compile Include="ServiceProtocolException.cs" />
+    <Compile Include="Services\DefaultProvider.cs" />
+    <Compile Include="Services\IServiceProvider.cs" />
+    <Compile Include="Services\Locator.cs" />
     <Compile Include="ServiceUri.cs" />
     <Compile Include="SlpReader.cs" />
     <Compile Include="SlpWriter.cs" />

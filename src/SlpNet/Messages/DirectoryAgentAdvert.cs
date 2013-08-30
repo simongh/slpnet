@@ -101,7 +101,7 @@ namespace Discovery.Slp.Messages
 			BootTimeStamp = reader.ReadDateTime();
 			var url = reader.ReadString();
 			Scopes.AddRange(reader.ReadList());
-			Uri = new ServiceUri(url, EntityFactory.Instance.CreateAttributeCollection(reader));
+			Uri = new ServiceUri(url, Services.Locator.GetInstance<AttributeCollection>(reader));
 			SpiStrings.AddRange(reader.ReadList());
 			ReadAuthBlocks(reader, AuthBlocks);
 		}
